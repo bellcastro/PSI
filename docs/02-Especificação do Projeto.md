@@ -53,24 +53,24 @@ domicilio procura uma forma de se atendido sem precisar sair de casa.
 
 Com base na análise das personas forma identificadas as seguintes histórias de usuários:
 
-|EU COMO... `PERSONA`| QUERO/PRECISO ... `FUNCIONALIDADE`                                                    |PARA ... `MOTIVO/VALOR`                    |
-|--------------------|---------------------------------------------------------------------------------------|-------------------------------------------|
-|Usuário do sistema  | Agendar uma consulta tanto presecial quanto online                                    | Realizar uma consulta                     |
-|Usuário do sistema  | Logar com email e senha no sistema                                                    | Acessar o sistema de maneira segura       |
-|Usuário do sistema  | Ser excluido ou anonimizado no sistema                                                | Exercer meu direito de ser esquecido |
-|Usuário do sistema  | Ser lembrado de uma consulta que está por vir                                         | Não perder a consulta |
-|Usuário do sistema  | Enviar e receber mensagens                                                            | Manter uma conversa |
-|Administrador       | Associar e desassociar um paciente de nutricionistas                                  | Garantir que nenhum paciente esteja com um nutricionista não que |
-|Paciente            | Preencher minha ficha de informação                                                   | Garantir que meu nutricionista tenha as informações necessarias para a consulta |
-|Paciente            | Ver historico de planos nutricionais e receitas                                       | Relembrar o que me foi passado       |
-|Nutricionista       | Criar um plano nutricional para cada paciente                                         | Que tanto ele quanto eu possa acompanhar de maneira organizada seu desenvolvimento |
-|Nutricionista       | Aceitar ou não um agendamento de consulta                                             | Que consiga encaixar em minha agenda |
-|Nutricionista       | Escrever posts para a população em geral                                              | Que duvidas simples já sejam sanadas sem necessidade de consulta |
-|Nutricionista       | Incluir meus pacientes a partir de um usuario                                         | Cadastrar meus pacientes |
-|Nutricionista       | Fazer anotações na ficha de meu paciente que apenas ele podera ver.                   | Marcar anotações importantes sobre as consultas com meus pacientes |
-|Nutricionista       | Criar receitas para seu paciente.                                                     | Que meu paciente possa ser medicado |
-|Nutricionista       | Pesquisar informações sobre determinado remedio acessando o banco de dados da anvisa. | Que me lembre as informações sobre um determinado remedio |
-|Nutricionista       | Ver historico de planos nutricionais e receitas de meus pacientes                     | Para garantir que não estou passando algo que ele é alergico |
+|EU COMO... `PERSONA`| QUERO/PRECISO ... `FUNCIONALIDADE`                                                    |PARA ... `MOTIVO/VALOR`                    |CASO DE USO ... `CASO DE USO`                    |
+|--------------------|---------------------------------------------------------------------------------------|-------------------------------------------|-------------------------------------------|
+|Usuário do sistema  | Agendar uma consulta tanto presecial quanto online                                    | Realizar uma consulta                     | Gerenciamento de agendamento de consulta |
+|Usuário do sistema  | Logar com email e senha no sistema                                                    | Acessar o sistema de maneira segura       | Gerenciamento de usuário | 
+|Usuário do sistema  | Ser excluido ou anonimizado no sistema                                                | Exercer meu direito de ser esquecido | Gerenciamento de usuário |
+|Usuário do sistema  | Ser lembrado de uma consulta que está por vir                                         | Não perder a consulta | Gerenciamento de comunicação |
+|Usuário do sistema  | Enviar e receber mensagens                                                            | Manter uma conversa | Gerenciamento de comunicação |
+|Administrador       | Associar e desassociar um paciente de nutricionistas                                  | Garantir que nenhum paciente esteja com um nutricionista não que | Gerenciamento de paciente |
+|Paciente            | Preencher minha ficha de informação                                                   | Garantir que meu nutricionista tenha as informações necessarias para a consulta | Cadastro ficha médica |
+|Paciente            | Ver historico de planos nutricionais e receitas                                       | Relembrar o que me foi passado       | Gerenciamento de paciente |
+|Nutricionista       | Criar um plano nutricional para cada paciente                                         | Que tanto ele quanto eu possa acompanhar de maneira organizada seu desenvolvimento | Cadastro do plano nutricional |
+|Nutricionista       | Aceitar ou não um agendamento de consulta                                             | Que consiga encaixar em minha agenda | Gerenciamento de agendamento de consultas |
+|Nutricionista       | Escrever posts para a população em geral                                              | Que duvidas simples já sejam sanadas sem necessidade de consulta | Gerenciamento de conteúdo |
+|Nutricionista       | Incluir meus pacientes a partir de um usuario                                         | Cadastrar meus pacientes | Gerenciamento de usuários |
+|Nutricionista       | Fazer anotações na ficha de meu paciente que apenas ele podera ver.                   | Marcar anotações importantes sobre as consultas com meus pacientes | Gerenciamento de pacientes |
+|Nutricionista       | Criar receitas para seu paciente.                                                     | Que meu paciente possa ser medicado | Gerenciamento do histórico do paciente |
+|Nutricionista       | Pesquisar informações sobre determinado remedio acessando o banco de dados da anvisa. | Que me lembre as informações sobre um determinado remedio | Gerenciamento de conteúdo |
+|Nutricionista       | Ver historico de planos nutricionais e receitas de meus pacientes                     | Para garantir que não estou passando algo que ele é alergico | Gerenciamento do histórico de pacientes |
 
 
 ## Requisitos
@@ -82,7 +82,7 @@ As tabelas que se seguem apresentam os requisitos funcionais e não funcionais q
 |ID    | Descrição do Requisito  | Prioridade |
 |------|-----------------------------------------|----|
 |RF-001| Permitir que o usuário paciente agendar uma consulta com uma nutricionista.                                             | ALTA  | 
-|RF-002| Permitir que ao confirmar uma consulta o sistema irá criar uma sala no google meet.                                       | ALTA  |
+|RF-002| Permitir que ao agendar uma consulta o sistema ira criar uma sala no google meet.                                       | ALTA  |
 |RF-003| Permitir que o paciente preencha sua ficha com suas preferencias e informações.                                         | ALTA  |
 |RF-004| Permitir que o nutricionista crie um plano nutricional para cada paciente.                                              | ALTA  |
 |RF-005| Permitir que o nutricionista aceite ou não um agendamento de consulta.                                                  | ALTA  |
