@@ -1,0 +1,127 @@
+﻿@model UserModel
+@{
+    ViewData["Title"] = "Desativar Conta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Usuario = (UserModel) ViewData["User"];
+}
+<div class="justify-content-end center-flex">
+    <form method="post" action="/Settings/User"> 
+            <div class="justify-content-end center-flex">
+                <p> Deseja desativar sua conta permanentemente? </p>
+                <a  href="/Identity/Account/Manage/PersonalData" class="btn btn-success" type="submit">Desativar</a>
+ 
+                <a class="btn btn-danger" type="submit" asp-action="Index">Não</a>
+            </div>
+        @Html.AntiForgeryToken()
+    </form>
+    </div>
+    @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            mount();
+        });
+
+
+        function mount() {
+            mountTooltips();
+            mountModal();
+            mountShow();
+        }
+
+        function mountModal() {
+            window.EDIT_MODAL = null;
+            const element = document.querySelector('#edit-modal');
+            if (element !== null) {
+                window.EDIT_MODAL = new bootstrap.Modal(element)
+                element.addEventListener('hidden.bs.modal', () => {
+                    const input = element.querySelector('input');
+                    if (input) {
+                        input.value = '';
+                    }
+                })
+            }
+        }
+
+        function mountTooltips() {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(element => {
+                return new bootstrap.Tooltip(element)
+            })
+        }
+
+        function mountShow() {
+            document.querySelectorAll('#confirmed-appointments tbody tr').forEach(element => {
+                element.onmousedown = showAppointment
+            })
+        }
+
+        function show(key) {
+            const modal = window.EDIT_MODAL;
+            if (modal) {
+                const title = modal._element.querySelector('.modal-title');
+                const editReason = modal._element.querySelector('#edit-reason');
+                if (title && editReason) {
+                    title.innerText = getEditTitle(key);
+                    editReason.innerText = getEditReason(key);
+                }
+
+                modal.show();
+            }
+        }
+
+        function getEditTitle(key) {
+            const TITLE_ENUM = {
+                reschedule: 'Editar Consulta',
+                refuse: 'Recusar Consulta',
+                cancel: 'Cancelar Consulta',
+            }
+
+            return TITLE_ENUM[key] ? TITLE_ENUM[key] : 'Editar Consulta'
+        }
+
+        function getEditReason(key) {
+            const REASON_ENUM = {
+                reschedule: 'do reagendamento',
+                refuse: 'da recusa',
+                cancel: 'do cancelamento',
+            }
+
+            return REASON_ENUM[key] ? REASON_ENUM[key] : 'da edi��o'
+        }
+
+        function confirm() {
+            showSuccessToast('Edi��o realizada com sucesso!');
+        }
+
+        function showAppointment(event) {
+            const MOUSE_BUTTONS = {
+                LEFT_CLICK: 0,
+                MIDDLE_CLICK: 1,
+                RIGHT_CLICK: 2
+            }
+
+            if (isClickable(event.target) && event.button < MOUSE_BUTTONS.RIGHT_CLICK) {
+                event.preventDefault();
+                if (event.button === MOUSE_BUTTONS.LEFT_CLICK) {
+                    window.location = './show.html'
+                    return;
+                }
+                window.open('./show.html', 'blank')
+            }
+        }
+
+        function isClickable(element) {
+            if (element.classList.contains('clickable')) {
+                return true;
+            }
+
+            if (element.classList.contains('not-clickable')) {
+                return false;
+            }
+
+            return element.parentNode === null ? false : isClickable(element.parentNode);
+        }
+
+    </script>
+
+}

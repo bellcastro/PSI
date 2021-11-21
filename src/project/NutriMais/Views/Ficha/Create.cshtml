@@ -1,0 +1,108 @@
+@model NutriMais.Models.FichaModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-5">
+        <form name="meuForm" method="post" id="formulario">
+            <div class="col-12">
+                <div id="formulario-conteudo">
+                    <div class="form-group">
+                        <label asp-for="Titulo" class="control-label"> </label>
+                        <input asp-for="Titulo" class="form-control" />
+                        <span asp-validation-for="Titulo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Nome" class="control-label"> </label>
+
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+
+                        <input asp-for="Nome" class="form-control" placeholder="Seu Nome" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" for="cadastro-email" class="form-label"> </label>
+                        <input asp-for="Email" class="form-control" placeholder="seuemail@host.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Altura" class="control-label"> </label>
+                        <input asp-for="Altura" class="form-control" placeholder="Sua Altura" />
+                        <span asp-validation-for="Altura" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Peso" class="control-label"> </label>
+                        <input asp-for="Peso" class="form-control" placeholder="Seu Peso" />
+                        <span asp-validation-for="Peso" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cadastro-atividade" class="form-label">Você realiza atividades físicas?</label>
+                        <select asp-for="AtividadeF" onchange="updateEventTitle()" id="cadastro-atividade" class="form-select" aria-label="AtividadeFisica">
+                            <option selected value="0">Não</option>
+                            <option selected value="1">Sim</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cadastro-quantasvezes" class="form-label">Quantas vezes na semana você pratica exercicios?</label>
+                        <select asp-for="QuantidadeAF" ´onchange="updateEventTitle()" id="cadastro-quantasvezes" class="form-select" aria-label="Quantas Vezes">
+                            <option selected value="0">Nenhuma</option>
+                            <option selected value="0">Nenhuma</option>>
+                        </select>
+                    </div>
+                    <label asp-for="Rotina" for="cadastro-descricao" class="form-label">
+                        <span>Descreva abaixo o que você come durante a rotina:</span>
+                        <div><textarea class="form-control" id="cadastro-descricao" rows="3"></textarea></div>
+                    </label>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+<div class="d-flex justify-content-center mt-4">
+    <button onclick="commit()"  class="btn btn-successclass="btn btn-outline-success me-2 atualizar-ficha" type="submit">Cadastrar</button>
+</div>
+<div>
+    <a asp-action="Index">Voltar</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script type="text/javascript">
+
+        document.querySelector(".atualizar-ficha").addEventListener("click", async function () {
+            try {
+                const idPlano = document.querySelector(".atualizar-ficha").dataset.idPlano;
+
+               // const response = await axios.delete(`${window.location.origin}/Ficha/AtualizarPlano?idPlano=${idPlano}`);
+                if (response.status === 204)
+                    showSuccessToast("Plano atualizado!");
+                else
+                    showErrorToast("Falha ao deletar plano");
+
+            } catch (error) {
+                showErrorToast(error)
+            }
+        });
+
+        async function commit() {
+            if (validate()) {
+                try {
+                    const response = await axios.post(`${window.location.origin}/Ficha/Create`, getData());
+                    if (response.status === 201) {
+                        showSuccessToast("Ficha cadastrada, por favor aguarde sua confirmação!");
+                        setTimeout(() => window.location = `${window.location.origin}/Ficha`, 3000);
+                        return;
+                    }
+                    showErrorToast(response.data.message)
+                } catch (error) {
+                    showErrorToast(error)
+                }
+            }
+        }
+
+     </script>
+}

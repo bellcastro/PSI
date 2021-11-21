@@ -1,0 +1,217 @@
+﻿@model PlanoAtualViewModel
+
+@{
+	ViewData["Title"] = "Planos";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	string diaDaSemana = null;
+}
+
+<div class="container-planos">
+	
+	@await Html.PartialAsync("~/Views/Shared/_MenuPlanosEReceitasPartial.cshtml")
+	<div class="quadro-saida">
+		<div class="quadro-plano-textos"><strong>PLANO NUTRICIONAL</strong></div>
+		<div style="display: flex; justify-content: center; align-items: center">
+			<textarea placeholder="DD/MM/AAAA" id="data-inicio" class="descrica-plano-dia" style="width: 130px; height: 30px">@Model.Plano?.DataInicioPlano</textarea>
+			até 
+			<textarea placeholder="DD/MM/AAAA" id="data-fim" class="descrica-plano-dia" style="width: 130px; height: 30px">@Model.Plano?.DataFimPlano</textarea>
+		</div>
+		
+		@foreach (var item in Model.PlanosSemanais)
+		{
+			<div class="container-dia-semana">
+				<div class="dia-semana-texto">
+					@switch (item.DiaDaSemana)
+					{
+						case DiaDaSemana.Segunda:
+							diaDaSemana = "SEGUNDA";
+							break;
+						case DiaDaSemana.Terca:
+							diaDaSemana = "TERÇA";
+							break;
+						case DiaDaSemana.Quarta:
+							diaDaSemana = "QUARTA";
+							break;
+						case DiaDaSemana.Quinta:
+							diaDaSemana = "QUINTA";
+							break;
+						case DiaDaSemana.Sexta:
+							diaDaSemana = "SEXTA";
+							break;
+						case DiaDaSemana.Sabado:
+							diaDaSemana = "SÁBADO";
+							break;
+						case DiaDaSemana.Domingo:
+							diaDaSemana = "DOMINGO";
+							break;
+						default:
+							break;
+					}
+					@diaDaSemana
+				</div>
+				<div class="plano-nutricional">
+					<textarea class="descrica-plano-dia">@item?.PlanoTexto</textarea>
+				</div>
+			</div>
+		}
+
+		<div class="observacoes-plano">
+			<label>OBSERVAÇÕES</label>
+			<textarea class="descrica-plano-dia">@Model.Plano?.ObservacoesPlano</textarea>
+		</div>
+		<div class="botao-salvar">
+			<button data-id-plano="@Model.PlanosSemanais.FirstOrDefault()?.IdPlano" class="btn btn-outline-success me-2 atualizar-plano">SALVAR</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.querySelector(".atualizar-plano").addEventListener("click", async function () {
+		try {
+			const response = await axios.patch(`${window.location.origin}/Planos/AtualizarPlano`, getObject());
+			if (response.status === 204)
+				showSuccessToast("Plano atualizado!");
+			else
+				showErrorToast("Falha ao deletar plano");
+
+		} catch (error) {
+			showErrorToast(error)
+		}
+	});
+
+	function getObject() {
+		const idPlano = document.querySelector(".atualizar-plano").dataset.idPlano;
+
+		return {
+			Plano: {
+				Id : idPlano,
+				IdUsuario: $('#id-usuario').val(),
+				DataInicioPlano : $('#data-inicio').val(),
+				DataFimPlano : $('#data-fim').val(),
+				ObservacoesPlano: $('.observacoes-plano textarea').val()
+			},
+			PlanosSemanais: getPlans()
+		}
+	}
+
+	function getPlans() {
+		const diasSemana = document.querySelectorAll('.container-dia-semana');
+		const planosSemanais = [];
+		diasSemana.forEach(diaSemana => {
+			const $diaSemana = $(diaSemana[0]);
+
+			const planoSemana = {
+				UserId: $diaSemana.find('#id-usuario').val(),
+				idPlano: document.querySelector(".atualizar-plano").dataset.idPlano,
+				DiaDaSemana: getEnum($diaSemana.find('.dia-semana-texto').text()),
+				PlanoTexto: $diaSemana.find('.plano-nutricional textarea').val()
+			}
+			planosSemanais.push(planoSemana)
+		})
+
+		return planosSemanais;
+	}
+
+	function getEnum(diaSemana) {
+		switch (diaSemana) {
+			case 'SEGUNDA':
+				return 1;
+			case 'TERÇA':
+				return 2;
+			case 'QUARNTA':
+				return 3;
+			case 'QUINTA':
+				return 4;
+			case 'SEXTA':
+				return 5;
+			case 'SÁBADO':
+				return 6;
+			case 'DOMINGO':
+				return 7;
+			default:
+				console.log(`Sorry, we are out of ${diaSemana}.`);
+		}
+	}
+</script>
+
+<style>
+	.botao-salvar {
+		text-align:center;
+		padding: 0 0 5px 0;
+	}
+	.descrica-plano-dia {
+		resize: none;
+		width: 95%;
+		margin: 15px;
+		border-radius: 5px;
+	}
+
+	.container-planos {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		justify-content: center;
+		align-content: center;
+	}
+
+	.menu-planos {
+		display: flex;
+		flex-direction: column;
+		width: 30%;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.btn {
+		margin-top: 10px;
+		width: 200px;
+	}
+
+	.quadro-saida {
+		border-style: solid;
+		border-width: 1px;
+		border-color: green;
+		border-radius: 3px;
+		width: 70%;
+	}
+
+	.quadro-plano-textos {
+		margin: 5px 0px 5px 0px;
+		text-align: center;
+	}
+
+	.container-dia-semana {
+		border-top: 2px solid rgba(0, 112, 15, 0.2);
+		display: flex;
+		padding: 5px;
+	}
+
+	.dia-semana-texto {
+		width: 10%;
+		text-align: center;
+		margin-left: 10px;
+		padding-right: 4px;
+		border-right: 2px solid rgba(0, 112, 15, 0.1);
+	}
+
+	.plano-nutricional {
+		justify-content: center;
+		text-align: center;
+		width: 90%;
+		max-height: 200px;
+		overflow: auto;
+	}
+
+	.observacoes-plano {
+		margin: 10px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+		.observacoes-plano > div {
+			max-height: 200px;
+			overflow: auto;
+		}
+</style>

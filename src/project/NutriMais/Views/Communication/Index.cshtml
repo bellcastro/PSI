@@ -1,0 +1,20 @@
+﻿@model IEnumerable<NutriMais.Models.CommunicationModel>
+
+@{
+    ViewData["Title"] = "NutriMais";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Fale Conosco</h1>
+<div style="width:100%;">
+    <img src="~/imgs/layout/fale-conosco-1280x600.jpg" style="align-content:center; width:50%; margin-left:25%" class="figure-img" alt="Imagem ilustrativa para contatos">
+</div>
+<p style="text-align:center">
+    Para consultas gerais, basta <u><a asp-action="Create">Adicionar Mensagem</a></u> e entraremos em contato!
+</p>
+
+<div style="width:100%; margin-left:auto; display:flex; justify-content:flex-end">
+    <a target="_blank" href='https://api.whatsapp.com/send?phone=5531987358907&text='>
+        <img src="~/imgs/layout/icon-whatsApp.png" style="width:100px" class="figure-img" alt="WhatsApp">
+    </a>
+</div>

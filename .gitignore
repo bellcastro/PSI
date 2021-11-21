@@ -1,0 +1,8 @@
+src/project/NutriMais/bin
+src/project/NutriMais/.vs
+src/project/NutriMais/obj
+.vs
+/src/project/NutriMais/Nutrimais.db
+/src/project/NutriMais/Nutrimais.db-wal
+/src/project/NutriMais/Nutrimais.db-shm
+src/project/NutriMais/credentials.json

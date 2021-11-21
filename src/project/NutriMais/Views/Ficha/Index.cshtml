@@ -1,0 +1,79 @@
+@model List<NutriMais.Models.FichaModel>
+
+@{
+    ViewData["Title"] = "Ficha";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Actions {
+    <a asp-action="Create">
+        <button class="btn btn-success" type="button">Nova Ficha</button>
+    </a>
+}
+
+<div class="card">
+    <div class="row">
+        <div class="col-md-7 text-center">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover" id="confirmed-appointments">
+                        <thead>
+                            <tr>
+                                <th>Titulo</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Ação</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+    @foreach (var item in 
+        Model)
+    {
+        <tr>
+            <td>
+                @item.Titulo)
+            </td>
+            <td>
+                @item.Nome)
+            </td>
+            <td>
+                @item.Email)
+            </td>
+            </tr>
+    }
+                            <tr class="clickable">
+                                <td>Titulo</td>
+                                <td>Nome</td>
+                                <td>Email</td>
+                                <td class="not-clickable">
+                                    <a href="./edit.html">
+                                        <button data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Ficha" type="button" class="btn btn-sm btn-primary"><span><i class="mdi mdi-eye"></i></span></button>
+                                    </a>
+                                    <a href="./edit.html">
+                                        <button data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Ficha" type="button" class="btn btn-sm btn-primary"><span><i class="mdi mdi-pencil"></i></span></button>
+                                    </a>
+                                    <button onclick="show('cancel')" data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir Ficha" type="button" class="btn btn-sm btn-danger"><span><i class="mdi mdi-close"></i></span></button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+@section Scripts {
+    <script>
+
+
+    </script>
+}
+

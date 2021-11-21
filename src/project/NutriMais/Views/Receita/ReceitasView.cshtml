@@ -1,0 +1,85 @@
+﻿@model IEnumerable<ReceitasModel>
+
+@{
+	ViewData["Title"] = "Receitas";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-planos">
+	@await Html.PartialAsync("~/Views/Shared/_MenuPlanosEReceitasPartial.cshtml")
+	<div class="quadro-saida">
+		<ul class="list-group">
+			@foreach (var item in Model)
+			{
+				<li class="list-group-item d-flex justify-content-between align-items-center @("receita-"+@item.Id)">
+					<a class="p-2 link-secondary" asp-action="ReceitaView" asp-route-Id="@item.Id">
+						<span>
+							@item.Id
+						</span>
+					</a>
+
+					<span class="rounded-pill">
+						<a asp-action="ReceitaView" asp-route-Id="@item.Id" class="fas fa-eye"></a>
+						<a data-id="@item.Id" class="fas deletar-plano fa-trash-alt"></a>
+					</span>
+				</li>
+			}
+		</ul>
+	</div>
+</div>
+<head>
+	<link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+</head>
+
+<script>
+	document.querySelector(".deletar-plano").addEventListener("click", async function () {
+		try {
+			const id = this.dataset.Id;
+			
+			const response = await axios.delete(`${window.location.origin}/Receita/DeletarReceita?Id=${id}`);
+			if (response.status === 204)
+				document.querySelector(".list-group").removeChild(document.querySelector(`.receita-${id}`));
+			else
+				showErrorToast("Falha ao deletar receita");
+
+		} catch (error) {
+			showErrorToast(error)
+		}
+	});
+</script>
+
+<style>
+	.deletar-plano {
+		cursor: pointer;
+	}
+
+	.container-planos {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		justify-content: center;
+		align-content: center;
+	}
+
+	.menu-planos {
+		display: flex;
+		flex-direction: column;
+		width: 30%;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.btn {
+		margin-top: 10px;
+		width: 200px;
+	}
+
+	.quadro-saida {
+		border-style: solid;
+		border-width: 1px;
+		border-color: green;
+		border-radius: 3px;
+		width: 70%;
+		margin: 5px;
+	}
+</style>

@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "DefaultConnection"
+<<<<<<< HEAD
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:NutriMaisContextConnection"
+=======
+<<<<<<< HEAD
+    },
+    "mssql2": {
+      "type": "mssql",
+      "connectionId": "NutriMaisContext"
+=======
+>>>>>>> 7b79e82666a0a3dc25887a75bafce03908a4ab21
+>>>>>>> fd537eb0f5b1bd3665d41caec14a869df3047eab
+    }
+  }
+}

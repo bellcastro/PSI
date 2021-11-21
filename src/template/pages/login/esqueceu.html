@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <!--  MUDAR O HREF DEPENDENDO DE ONDE COLOCOU SEU ARQUIVO HTML -->
+    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <!--  MUDAR O HREF DEPENDENDO DE ONDE COLOCOU SEU ARQUIVO HTML -->
+    <!--  CAMINHO DO CSS DO PROJETO -->
+    <link href="../../assets/css/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <title>NutriMais</title>
+</head>
+<body>
+    <header>
+      <button class="navbar-toggler text-black justify-content-start" style="display: none;" type="button" data-bs-toggle="collapse" data-bs-target="#nav-bar-wrapper" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span style="font-size: 3rem;"><i class="mdi mdi-menu"></i></span>
+      </button>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 border-bottom header">
+          <a href="pages/home/index.html" class="d-flex align-items-center text-dark text-decoration-none">
+            <svg style="width:50px;height:50px" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+            </svg>
+            <span class="fs-4 ps-3 fw-bold"> NutriMais</span>
+          </a>
+    
+          <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Login</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Logout</a>
+          </nav>
+        </div>
+        <div class="nav-scroller py-1 mb-2 bg-light" id="nav-bar-wrapper">
+          <nav class="nav d-flex justify-content-between navigation-bar">
+            <a class="p-2 link-secondary" href="pages/appointment/index.html">
+                <button class="btn btn-outline-success me-2" type="button">Consultas</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Planos Nutricionais e Receitas</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Minha Ficha</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Fale Conosco</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Configurações</button>
+            </a>
+          </nav>
+        </div>
+    </header>
+    <div class="container-fluid py-3">
+      <main>
+        <div class="card">
+            <h3 class="card-header">
+                <div class="row">
+                    <div class="col-6">
+                     Tela de Recuperação de Conta
+                        <!--  TITULO DA PAGINA AQUI -->
+                    </div>
+                    <div class="col-6 d-flex justify-content-end">
+                        <!--  AÇÔES DA PAGINA AQUI -->
+                    </div>
+                </div>
+            </h3>
+            <div class="card-body">
+                    <!--  ADICIONAR CODIGO NOVO AQUI - COPIAR O RESTO PARA SEU TEMPLATE HTML -->
+              <h1>Digite o seu e-mail para recuperar a sua senha</h1>
+              <div class="formulario">
+                <div id="formulario-conteudo">
+                  <form>
+                    <input type="text" id="login"  name="E-mail" placeholder="Login">
+                    <input type="submit" value="Enviar código">
+                  </form>
+                  
+                </div>
+              </div>
+         
+            </div>
+          </div>
+        </main>
+    </div>
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+      <div class="d-flex ps-3 text-center">
+          <div class="col-6 col-md">
+            <h5>Funcionalidades</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Lorem Ipsum</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Aliquam accumsan</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Tempus sit amet</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Fringilla eget</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Recursos</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Repositorio</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Documentação</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>About</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Equipe</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Privacy</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Terms</a></li>
+            </ul>
+          </div>
+      </div>
+      <div class="d-flex text-center pt-5">
+          <div class="col-12 col-md">
+          <svg style="width:50px;height:50px" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+          </svg>
+          <small class="d-block mb-3 text-muted">&copy; 2017–2021</small>
+        </div>
+      </div>
+  </footer>
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="success-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-success text-white py-1">
+        <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+      </svg>          
+      <strong class="me-auto ps-2">NutriMais</strong>
+      <button type="button" title="Fechar" style="color: white;" class="btn btn-outlined btn-sm p-0" data-bs-dismiss="toast"><span class="fs-5"><i class="mdi mdi-close"></i></span></button>
+      </div>
+      <div class="toast-body fw-bold" style="background-color: #d1e7dd;">
+        Sucesso - <span id="success-message"></span>
+      </div>
+    </div>
+  </div>
+    <!--  MUDAR O HREF DEPENDENDO DE ONDE COLOCOU SEU ARQUIVO HTML -->  
+    <script src="assets/js/bootstrap/bootstrap.bundle.min.js"></script>    
+    <script src="assets/js/main.js"></script>    
+</body>
+</html>

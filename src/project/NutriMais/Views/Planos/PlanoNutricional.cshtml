@@ -1,0 +1,79 @@
+﻿@model IEnumerable<PlanoSemanalModel>
+
+@{
+	ViewData["Title"] = "Planos";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-planos">
+	@await Html.PartialAsync("~/Views/Shared/_MenuPlanosEReceitasPartial.cshtml")
+	<div class="quadro-saida">
+		<ul class="list-group">
+			@foreach (var item in Model)
+			{
+				<li class="list-group-item d-flex justify-content-between align-items-center @("plano-"+@item.IdPlano)">
+					<span>@item.IdPlano</span>
+					<span class="rounded-pill">
+						<a asp-action="PlanosEReceitas" asp-route-idPlano="@item.IdPlano" asp-route-userId="@item.UserId" class="fas fa-edit"></a>
+						<a data-id-plano="@item.IdPlano" data-user-id="@item.UserId" class="fas deletar-plano fa-trash-alt"></a>
+					</span>
+				</li>
+			}
+		</ul>
+	</div>
+</div>
+<head>
+	<link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+</head>
+
+<script>
+	document.querySelector(".deletar-plano").addEventListener("click", async function () {
+		try {
+			const idPlano = this.dataset.idPlano;
+			const userId = this.dataset.userId;
+			const response = await axios.delete(`${window.location.origin}/Planos/DeletarPlano?idPlano=${idPlano}&userId=${userId}`);
+			if (response.status === 204) 				
+				document.querySelector(".list-group").removeChild(document.querySelector(`.plano-${idPlano}`));			
+			else
+				showErrorToast("Falha ao deletar plano");
+
+		} catch (error) {
+			showErrorToast(error)
+		}
+	});	
+</script>
+
+<style>
+	.deletar-plano{
+		cursor: pointer;
+	}
+	.container-planos {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		justify-content: center;
+		align-content: center;
+	}
+
+	.menu-planos {
+		display: flex;
+		flex-direction: column;
+		width: 30%;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.btn {
+		margin-top: 10px;
+		width: 200px;
+	}
+
+	.quadro-saida {
+		border-style: solid;
+		border-width: 1px;
+		border-color: green;
+		border-radius: 3px;
+		width: 70%;
+		margin: 5px;
+	}
+</style>

@@ -1,0 +1,205 @@
+﻿@model NutriMais.Models.AppointmentModel
+
+@{
+    ViewData["Title"] = string.Format("Consulta com: {0}", Model.GetOppositeParticipant((UserModel)ViewData["User"]).FullName);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="/lib/full-calendar/main.min.css" rel="stylesheet">
+    <style>
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .fc-toolbar-title {
+            text-transform: capitalize;
+        }
+
+        .fc-scroller {
+            overflow: hidden !important;
+        }
+    </style>
+}
+
+@section Actions {
+    <a asp-action="Edit" asp-route-id="@Model.Id">
+        <button class="btn btn-primary text-white" type="button">Editar Consulta</button>
+    </a>
+    <a href="#">
+        <button style="margin-left: 5px" onclick="show()" class="btn btn-danger" type="button">Cancelar Consulta</button>
+    </a>
+}
+
+@if (Model.IsConfirmed)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-success text-center fs-5 fw-bold" role="alert">
+                Consulta Confirmada
+                @if (Model.Type == AppointmentType.Virtual && Model.Link != null && Model.Link != "")
+                {
+                <span> - </span><a href="@Model.Link" style="font-size: 17px;  font-weight: 500;">@Model.Link</a>
+                }
+            </div>
+        </div>
+    </div>
+}
+<div class="row">
+    <div class="col-md-5">
+        <form>
+            <div class="mb-3">
+                <label for="appointment-title" class="form-label">Titulo</label>
+                <div id="appointment-title">@Model.Title</div>
+            </div>
+            <div class="mb-3">
+                <label for="appointment-type" class="form-label">Tipo</label>
+                <div id="appointment-type">@Model.TypeLabel</div>
+            </div>
+            <div class="mb-3">
+                <label for="appointment-participant" class="form-label">Com</label>
+                <div id="appointment-participant">@Model.GetOppositeParticipant((UserModel)ViewData["User"]).FullName</div>
+            </div>
+            <div class="mb-3">
+                <label for="appointment-reason" class="form-label">Motivo</label>
+                <div id="appointment-reason">@Model.Description</div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-7">
+        <div id="calendar" style="max-height: 613px;"></div>
+    </div>
+</div>
+
+@section Modals {
+    <div class="modal fade" id="edit-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancelar Consulta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="edit-reason-input" class="form-label">Por favor: insira o motivo <span id="edit-reason">do cancelamento</span></label>
+                    <input type="text" id="edit-reason-input" class="form-control" aria-describedby="edit-reason-input-describe">
+                    <div id="edit-reason-input-describe" class="form-text">
+                        Será enviado uma mensagem para o participante dessa consulta!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button onclick="cancelAppointment(@Model.Id)" data-bs-dismiss="modal" type="button" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="/lib/full-calendar/main.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", () => {
+            mount();
+        });
+
+        function mount() {
+            mountCalendar();
+            mountModal();
+        }
+
+        function mountModal() {
+            window.EDIT_MODAL = null;
+            const element = document.querySelector('#edit-modal');
+            if (element !== null) {
+                window.EDIT_MODAL = new bootstrap.Modal(element)
+                element.addEventListener('hidden.bs.modal', () => {
+                    const input = element.querySelector('input');
+                    if (input) {
+                        input.value = '';
+                    }
+                })
+            }
+            }
+
+            function show() {
+                const modal = window.EDIT_MODAL;
+                if (modal) {
+                    modal.show();
+                }
+            }
+
+        function mountCalendar() {
+            const element = document.querySelector('#calendar');
+            if (element) {
+                window.CALENDAR = new FullCalendar.Calendar(element, {
+                    initialView: 'dayGridMonth',
+                    showNonCurrentDates: false,
+                    selectable: true,
+                    dayMaxEvents: true,
+                    locale: 'pt-br',
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    },
+                    eventDidMount: handleEventMount,
+                    eventChange: (info) => handleEventChange(info.event),
+                });
+                window.CALENDAR.render();
+                addStoredEvents();
+            }
+        }
+
+        function handleEventMount(info) {
+            info.event.setExtendedProp('element', info.el);
+        }
+
+        function handleEventChange(event) {
+            if (event.extendedProps.element) {
+                return new bootstrap.Tooltip(event.extendedProps.element, {
+                    title: event.title,
+                    placement: 'top',
+                    trigger: 'hover',
+                    container: 'body'
+                });
+            }
+        }
+
+        function addStoredEvents() {
+            const events =  @Html.Raw(Json.Serialize(((List<AppointmentModel>)ViewData["Appointments"]).ConvertAll(a => a.Serialize())));
+            events.forEach(event => {
+                const participant = event.owner.id === '@(((UserModel)ViewData["User"]).Id)' ? event.participant : event.owner;
+                window.CALENDAR.addEvent({ title: `${event.title} - ${event.participant.fullName}`, start: event.startsAt, end: event.endsAt })
+            })
+        }
+
+        async function cancelAppointment(id) {
+            if (validateReason()) {
+                try {
+                    const response = await axios.put(`${window.location.origin}/Appointment/Cancel/${id}`, { Reason: getReason() });
+                    if (response.status === 200) {
+                        showSuccessToast("Consulta cancelada!");
+                        setTimeout(() => window.location = `${window.location.origin}/Appointment`, 3000);
+                        return;
+                    }
+                    showErrorToast(response.data.message)
+                } catch (error) {
+                    showErrorToast(error)
+                }
+            }
+        }
+
+        function validateReason() {
+            return true;
+        }
+
+        function getReason() {
+            const element = document.querySelector('#edit-reason-input');
+            if (element) {
+                return $(element).val();
+            }
+            return null;
+        }
+    </script>
+}

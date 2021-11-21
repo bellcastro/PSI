@@ -1,0 +1,29 @@
+﻿<div class="menu-planos">
+	<input type="hidden" id="#id=usuario" value="" />
+	<a class="p-2 link-secondary" asp-action="PlanoNutricional" asp-controller="Planos">
+		<button class="btn btn-outline-success me-2">VISUALIZAR PLANOS NUTRICIONAIS</button>
+	</a>
+	<a class="p-2 link-secondary" asp-action="AdicionarPlanoNutricional" asp-controller="Planos">
+		<button class="btn btn-outline-success me-2">ADICIONAR PLANO NUTRICIONAL</button>
+	</a>
+	<a class="p-2 link-secondary" asp-action="ReceitasView" asp-controller="Receita">
+		<button class="btn btn-outline-success me-2">VISUALIZAR RECEITAS</button>
+	</a>
+	<a class="p-2 link-secondary" asp-action="" asp-controller="">
+		<button class="btn btn-outline-success me-2">ADICIONAR RECEITA</button>
+	</a>
+</div>
+<style>
+	.menu-planos {
+		display: flex;
+		flex-direction: column;
+		width: 30%;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.btn {
+		margin-top: 10px;
+		width: 200px;
+	}
+</style>

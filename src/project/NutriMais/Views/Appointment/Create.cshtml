@@ -1,0 +1,283 @@
+﻿@model NutriMais.Models.AppointmentModel
+
+@{
+    ViewData["Title"] = "Agendar Consulta";
+    ViewData["hasFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="/lib/full-calendar/main.min.css" rel="stylesheet">
+    <style>
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .fc-toolbar-title {
+            text-transform: capitalize;
+        }
+
+        .fc-scroller {
+            overflow: hidden !important;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-md-5">
+        <form>
+            <div class="mb-3">
+                <label asp-for="Title" for="appointment-title" class="form-label">Titulo</label>
+                <input onkeyup="updateEventTitle()" type="text" class="form-control" id="appointment-title" aria-describedby="appointment-title">
+            </div>
+            <div class="mb-3">
+                <label for="appointment-type" class="form-label">Tipo</label>
+                <select asp-for="Type" class="form-select" aria-label="Tipo da consulta">
+                    <option selected value="0">Tipo da consulta</option>
+                    @foreach (var item in AppointmentModel.GetAvailableTypes())
+                    {
+                        <option value="@item.Key">@item.Value</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ParticipantId" for="appointment-participant" class="form-label">Com</label>
+                <select onchange="updateEventTitle()" id="appointment-participant" class="form-select" aria-label="Participante">
+                    <option selected value="0">Participante</option>
+                    @foreach (UserModel user in ViewBag.Participants)
+                    {
+                        <option value="@user.Id">@user.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Title" for="appointment-reason" class="form-label">Motivo</label>
+                <textarea class="form-control" id="appointment-reason" rows="3"></textarea>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-7">
+        <div id="calendar" style="max-height: 613px;"></div>
+    </div>
+</div>
+
+@section Footer {
+    <button onclick="commit()" class="btn btn-success" type="button">Agendar</button>
+}
+
+@section Modals {
+    <div class="modal fade" id="date-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="from-time-input" class="form-label">De:</label>
+                            <input type="time" id="from-time-input" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label for="until-time-input" class="form-label">Ate:</label>
+                            <input type="time" id="until-time-input" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button onclick="addEvent()" data-bs-dismiss="modal" type="button" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="/lib/full-calendar/main.min.js"></script>
+    <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", () => {
+        mount();
+    });
+
+    function mount() {
+        mountCalendar();
+        mountModal();
+    }
+
+    function mountModal() {
+        window.DATE_MODAL = null;
+        const element = document.querySelector('#date-modal');
+        if (element !== null) {
+            window.DATE_MODAL = new bootstrap.Modal(element)
+            element.addEventListener('show.bs.modal', () => {
+                element.querySelectorAll('input').forEach(input => input.value = '');
+            })
+        }
+    }
+
+    function mountCalendar() {
+        const element = document.querySelector('#calendar');
+        if (element) {
+            window.CALENDAR = new FullCalendar.Calendar(element, {
+                initialView: 'dayGridMonth',
+                showNonCurrentDates: false,
+                selectable: true,
+                dayMaxEvents: true,
+                locale: 'pt-br',
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false
+                },
+                select: handleSelectDate,
+                eventDidMount: handleEventMount,
+                eventChange: (info) => handleEventChange(info.event),
+            });
+            window.CALENDAR.render();
+            addStoredEvents();
+        }
+    }
+
+    function handleEventMount(info) {
+        info.event.setExtendedProp('element', info.el);
+    }
+
+    function handleEventChange(event) {
+        if (event.extendedProps.element) {
+            return new bootstrap.Tooltip(event.extendedProps.element, {
+                title: event.title,
+                placement: 'top',
+                trigger: 'hover',
+                container: 'body'
+            });
+        }
+    }
+
+    function addStoredEvents() {
+        const events =  @Html.Raw(Json.Serialize(((List<AppointmentModel>)ViewData["Appointments"]).ConvertAll(a => a.Serialize())));
+        events.forEach(event => {
+            const participant = event.owner.id === '@(((UserModel)ViewData["User"]).Id)' ? event.participant : event.owner;
+            window.CALENDAR.addEvent({ title: `${event.title} - ${event.participant.fullName}`, start: event.startsAt, end: event.endsAt })
+        })
+    }
+
+    function handleSelectDate(selectedInfo) {
+        window.SELECTED_INFO = {
+            date: selectedInfo.startStr,
+        }
+
+        window.DATE_MODAL.show();
+    }
+
+    function addEvent() {
+        const eventTimes = getEventTimes();
+        const eventDate = window.SELECTED_INFO;
+        if (eventTimes && eventDate) {
+            const event = {
+                id: 'new-event',
+                title: getEventTitle(),
+                start: eventDate.date + 'T' + eventTimes.start,
+                end: eventDate.date + 'T' + eventTimes.end,
+            }
+            storeEvent(event);
+        }
+    }
+
+    function updateEventTitle() {
+        const storedEvent = window.CALENDAR.getEventById('new-event');
+        if (storedEvent) {
+            storedEvent.setProp('title', getEventTitle());
+        }
+    }
+
+    function storeEvent(event) {
+        const storedEvent = window.CALENDAR.getEventById('new-event');
+        if (storedEvent) {
+            storedEvent.setProp('title', event.title);
+            storedEvent.setStart(event.start);
+            storedEvent.setEnd(event.end);
+            return;
+        }
+
+        window.CALENDAR.addEvent(event);
+    }
+
+    function getEventTitle() {
+        const titleElement = document.querySelector('#appointment-title')
+        const participantElement = document.querySelector('#appointment-participant')
+        if (titleElement && participantElement && titleElement.value) {
+            if (participantElement.value !== '0') {
+                return titleElement.value + ' - ' + participantElement.selectedOptions[0].innerText;
+            }
+            return titleElement.value;
+        }
+
+        return 'Novo Evento';
+    }
+
+    function getEventTimes() {
+        const startTimeElement = document.querySelector('#from-time-input')
+        const endTimeElement = document.querySelector('#until-time-input')
+        if (startTimeElement && endTimeElement && startTimeElement.value && endTimeElement.value) {
+            return {
+                start: startTimeElement.value + ':00',
+                end: endTimeElement.value + ':00'
+            }
+        }
+
+        return undefined;
+    }
+
+    async function commit() {
+        if (validate()) {
+            try {
+                const response = await axios.post(`${window.location.origin}/Appointment/Create`, getData());
+                if (response.status === 201) {
+                    showSuccessToast("Consulta requisitada, por favor aguarde sua confirmação!");
+                    setTimeout(() => window.location = `${window.location.origin}/Appointment`, 3000);
+                    return;
+                }
+                showErrorToast(response.data.message)
+            } catch (error) {
+                showErrorToast(error)
+            }
+        }
+    }
+
+    function getData() {
+        return {
+            Title: $("#appointment-title").val(),
+            Type: Number($("#Type").val()),
+            ParticipantId: $("#appointment-participant").val(),
+            Description: $("#appointment-reason").val(),
+            StartsAt: getStoredEvent('start'),
+            EndsAt: getStoredEvent('end') ? getStoredEvent('end') : getStoredEvent('start'),
+        }
+    }
+
+    function validate() {
+        // TODO Adicionar Validacao;
+        return true;
+    }
+
+    function getStoredEvent(type) {
+        const storedEvent = window.CALENDAR.getEventById('new-event');
+        if (storedEvent && storedEvent[type]) {
+            return toDateTimeString(storedEvent[type])
+        }
+
+        return null;
+    }
+
+    function toDateTimeString(date) {
+        return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}T${padZero(date.getHours())}:${padZero(date.getMinutes())}:${padZero(date.getSeconds())}`
+    }
+
+    function padZero(string) {
+        return String(string).padStart(2, "0")
+    }
+    </script>
+}

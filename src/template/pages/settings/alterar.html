@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br ">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../../assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../../assets/css/main.css" rel="stylesheet">
+    <title>NutriMais</title>
+</head>
+<body>
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 border-bottom header">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <svg style="width:50px;height:50px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+                </svg>
+                <span class="fs-4 ps-3 fw-bold"> NutriMais</span>
+            </a>
+
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                <a class="me-3 py-2 text-dark text-decoration-none" href="#">Login</a>
+                <a class="me-3 py-2 text-dark text-decoration-none" href="#">Logout</a>
+            </nav>
+        </div>
+        <div class="nav-scroller py-1 mb-2 bg-light" id="nav-bar-wrapper">
+            <nav class="nav d-flex justify-content-between navigation-bar">
+                <a class="p-2 link-secondary" href="/src/template/pages/appointment/index.html">
+                    <button class="btn btn-outline-success me-2" type="button">Consultas</button>
+                </a>
+                <a class="p-2 link-secondary" href="#">
+                    <button class="btn btn-outline-success me-2" type="button">Planos Nutricionais e Receitas</button>
+                </a>
+                <a class="p-2 link-secondary" href="#">
+                    <button class="btn btn-outline-success me-2" type="button">Minha Ficha</button>
+                </a>
+                <a class="p-2 link-secondary" href="#">
+                    <button class="btn btn-outline-success me-2" type="button">Fale Conosco</button>
+                </a>
+                <a class="p-2 link-secondary" href="./index.html">
+                    <button class="btn btn-outline-success me-2" type="button">Configura��es</button>
+                </a>
+            </nav>
+        </div>
+    </header>
+    <div class="container py-3">
+        <main>
+            <!--  ADICIONAR CODIGO NOVO AQUI - COPIAR O RESTO PARA SEU TEMPLATE HTML -->
+            <div class="card">
+                <h3 class="card-header">
+                    <div class="row">
+                        <div class="col-6">
+                            Alterar Cadastro
+                        </div>
+                    </div>
+                </h3>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="appointment-title" class="form-label">Nome</label>
+                                    <input onkeyup="updateEventTitle()" type="text" class="form-control" id="appointment-title" aria-describedby="appointment-title">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="appointment-title" class="form-label">Email</label>
+                                    <input onkeyup="updateEventTitle()" type="text" class="form-control" id="appointment-title" aria-describedby="appointment-title">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-7">
+                            <div id="calendar" style="max-height: 613px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer justify-content-end d-flex">
+                    <button onclick="commit()" class="btn btn-success" type="button">Alterar</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        <div class="row ps-3">
+            <div class="col-12 col-md">
+                <svg style="width:50px;height:50px" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+                </svg>
+                <small class="d-block mb-3 text-muted">&copy; 2017�2021</small>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Funcionalidades</h5>
+                <ul class="list-unstyled text-small">
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Lorem Ipsum</a></li>
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Aliquam accumsan</a></li>
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Tempus sit amet</a></li>
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Fringilla eget</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Recursos</h5>
+                <ul class="list-unstyled text-small">
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Repositorio</a></li>
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Documenta��o</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>About</h5>
+                <ul class="list-unstyled text-small">
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Equipe</a></li>
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Privacy</a></li>
+                    <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <!--  MUDAR O HREF DEPENDENDO DE ONDE COLOCOU SEU ARQUIVO HTML -->
+    <script src="assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

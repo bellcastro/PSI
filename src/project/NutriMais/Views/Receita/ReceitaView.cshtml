@@ -1,0 +1,63 @@
+﻿@model ReceitasModel
+
+@{
+	ViewData["Title"] = "Receitas";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-planos">
+	@await Html.PartialAsync("~/Views/Shared/_MenuPlanosEReceitasPartial.cshtml")
+	<div class="quadro-saida">
+		<div class="quadro-plano-textos"><strong>RECEITA @Model?.Id</strong></div>
+		<div class="quadro-plano-textos">@Model?.DataCadastro</div>
+		<div class="observacoes-plano">
+			<label>INSTRUÇÕES</label>
+			<textarea class="descrica-plano-dia">
+				@Model?.TextoReceita
+			</textarea>
+		</div>
+	</div>
+	
+</div>
+
+<style>
+	.descrica-plano-dia {
+		resize: none;
+		width: 95%;
+		margin: 15px;
+		border-radius: 5px;
+	}
+
+	.container-planos {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		justify-content: center;
+		align-content: center;
+	}
+
+	.quadro-saida {
+		border-style: solid;
+		border-width: 1px;
+		border-color: green;
+		border-radius: 3px;
+		width: 70%;
+	}
+
+	.quadro-plano-textos {
+		margin: 5px 0px 5px 0px;
+		text-align: center;
+	}
+	.observacoes-plano {
+		margin: 10px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+		.observacoes-plano > div {
+			max-height: 200px;
+			overflow: auto;
+		}
+</style>

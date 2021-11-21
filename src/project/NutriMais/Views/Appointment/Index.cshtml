@@ -1,0 +1,314 @@
+﻿@model IEnumerable<NutriMais.Models.AppointmentModel>
+
+@{
+    ViewData["Title"] = "Consultas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Actions {
+    <a asp-action="Create">
+        <button class="btn btn-success" type="button">Agendar Consulta</button>
+    </a>
+}
+
+<div class="row">
+    <div class="col-md-7 text-center">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="card-title">Proximas Consultas</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover" id="confirmed-appointments">
+                        <thead>
+                            <tr>
+                                <th>Titulo</th>
+                                <th>Tipo</th>
+                                <th>Com</th>
+                                <th>Quando</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (AppointmentModel appointment in Model.Where(a => a.IsConfirmed))
+                            {
+                                <tr class="clickable" data-id="@appointment.Id">
+                                    <td>@appointment.Title</td>
+                                    <td>@appointment.TypeLabel</td>
+                                    <td>@appointment.GetOppositeParticipant((UserModel)ViewData["User"]).FullName</td>
+                                    <td>@appointment.StartsAt.ToString("dd/MM/yyyy à\\s HH:mm")</td>
+                                    <td class="not-clickable">
+                                        <a asp-action="Edit" asp-route-id="@appointment.Id">
+                                            <button data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Consulta" type="button" class="btn btn-sm btn-primary"><span><i class="mdi mdi-pencil"></i></span></button>
+                                        </a>
+                                        <button onclick="show('cancel', @appointment.Id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelar" type="button" class="btn btn-sm btn-danger"><span><i class="mdi mdi-close"></i></span></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 text-center">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="card-title">Consultas à Confirmar</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover" id="draft-appointments">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Com</th>
+                                <th>Quando</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (AppointmentModel appointment in Model.Where(a => a.isDraft))
+                            {
+                                <tr  class="clickable" data-id="@appointment.Id">
+                                    <td>@appointment.TypeLabel</td>
+                                    <td>@appointment.GetOppositeParticipant((UserModel)ViewData["User"]).FullName</td>
+                                    <td>@appointment.StartsAt.ToString("dd/MM/yyyy à\\s HH:mm")</td>
+                                    <td class="not-clickable">
+                                        <a asp-action="Edit" asp-route-id="@appointment.Id">
+                                            <button data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Consulta" type="button" class="btn btn-sm btn-primary"><span><i class="mdi mdi-pencil"></i></span></button>
+                                        </a>
+                                        @if (appointment.CanRespondToAppointment((UserModel)ViewData["user"]))
+                                        {
+                                            <button onclick="confirmAppointment(@appointment.Id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmar" type="button" class="btn btn-sm btn-success"><span><i class="mdi mdi-check"></i></span></button>
+                                            <button onclick="show('refuse', @appointment.Id)" data-bs-toggle="tooltip" data-bs-placement="top" title="Recusar" type="button" class="btn btn-sm btn-danger"><span><i class="mdi mdi-close"></i></span></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Modals {
+    <div class="modal fade" id="edit-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="edit-reason-input" class="form-label">Por favor: insira o motivo <span id="edit-reason"></span></label>
+                    <input id="edit-reason-input" class="form-control" aria-describedby="edit-reason-input-describe">
+                    <div id="edit-reason-input-describe" class="form-text">
+                        Será enviado uma mensagem para o participante dessa consulta!
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button onclick="confirm()" id="confirm-button" data-bs-dismiss="modal" type="button" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            mount();
+        });
+
+        function mount() {
+            mountTooltips();
+            mountModal();
+            mountShow();
+        }
+
+        function mountModal() {
+            window.EDIT_MODAL = null;
+            const element = document.querySelector('#edit-modal');
+            if (element !== null) {
+                window.EDIT_MODAL = new bootstrap.Modal(element)
+                element.addEventListener('hidden.bs.modal', () => {
+                    const input = element.querySelector('input');
+                    if (input) {
+                        input.value = '';
+                    }
+                })
+            }
+        }
+
+        function mountTooltips() {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(element => {
+                return new bootstrap.Tooltip(element)
+            })
+        }
+
+        function mountShow() {
+            document.querySelectorAll('#confirmed-appointments tbody tr').forEach(element => {
+                element.onmousedown = event => showAppointment(event, element.getAttribute('data-id'));
+            })
+
+            document.querySelectorAll('#draft-appointments tbody tr').forEach(element => {
+                element.onmousedown = event => showAppointment(event, element.getAttribute('data-id'));
+            })
+        }
+
+        function show(key, id) {
+            const modal = window.EDIT_MODAL;
+            if (modal) {
+                const title = modal._element.querySelector('.modal-title');
+                const editReason = modal._element.querySelector('#edit-reason');
+                const confirmButton = modal._element.querySelector('#confirm-button');
+                if (title && editReason && confirmButton) {
+                    title.innerText = getEditTitle(key);
+                    editReason.innerText = getEditReason(key);
+                    confirmButton.setAttribute("data-type", key);
+                    confirmButton.setAttribute('data-id', id);
+                }
+
+                modal.show();
+            }
+        }
+
+        function getEditTitle(key) {
+            const TITLE_ENUM = {
+                reschedule: 'Editar Consulta',
+                refuse: 'Recusar Consulta',
+                cancel: 'Cancelar Consulta',
+            }
+
+            return TITLE_ENUM[key] ? TITLE_ENUM[key] : 'Editar Consulta'
+        }
+
+        function getEditReason(key) {
+            const REASON_ENUM = {
+                refuse: 'da recusa',
+                cancel: 'do cancelamento',
+            }
+
+            return REASON_ENUM[key] ? REASON_ENUM[key] : 'da edição'
+        }
+
+        function getEditMethod(key) {
+            const METHOD_ENUM = {
+                refuse: refuseAppointment,
+                cancel: cancelAppointment
+            }
+
+            return METHOD_ENUM[key] ? METHOD_ENUM[key] : null
+        }
+
+        async function refuseAppointment(id) {
+            if (validateReason()) {
+                try {
+                    const response = await axios.put(`${window.location.origin}/Appointment/Refuse/${id}`, { Reason: getReason() });
+                    if (response.status === 200) {
+                        showSuccessToast("Consulta recusada!");
+                        setTimeout(() => window.location = `${window.location.origin}/Appointment`, 3000);
+                        return;
+                    }
+                    showErrorToast(response.data.message)
+                } catch (error) {
+                    showErrorToast(error)
+                }
+            }
+        }
+
+        async function cancelAppointment(id) {
+            if (validateReason()) {
+                try {
+                    const response = await axios.put(`${window.location.origin}/Appointment/Cancel/${id}`, { Reason: getReason() });
+                    if (response.status === 200) {
+                        showSuccessToast("Consulta cancelada!");
+                        setTimeout(() => window.location = `${window.location.origin}/Appointment`, 3000);
+                        return;
+                    }
+                    showErrorToast(response.data.message)
+                } catch (error) {
+                    showErrorToast(error)
+                }
+            }
+        }
+
+        async function confirmAppointment(id) {
+            try {
+                const response = await axios.put(`${window.location.origin}/Appointment/Confirm/${id}`);
+                if (response.status === 200) {
+                    showSuccessToast("Consulta confirmada!");
+                    setTimeout(() => window.location = `${window.location.origin}/Appointment`, 3000);
+                    return;
+                }
+                showErrorToast(response.data.message)
+            } catch (error) {
+                showErrorToast(error)
+            }
+        }
+
+        function validateReason() {
+            return true;
+        }
+
+        function getReason() {
+            const element = document.querySelector('#edit-reason-input');
+            if (element) {
+                return $(element).val();
+            }
+            return null;
+        }
+
+        async function confirm() {
+            const modal = window.EDIT_MODAL;
+            if (modal) {
+                const confirmButton = modal._element.querySelector('#confirm-button');
+                if (confirmButton) {
+                    const method = getEditMethod(confirmButton.getAttribute("data-type"));
+                    if (method) {
+                        await method(confirmButton.getAttribute('data-id'));
+                    }
+                }
+            }
+            
+        }
+
+        function showAppointment(event, id) {
+            const MOUSE_BUTTONS = {
+                LEFT_CLICK: 0,
+                MIDDLE_CLICK: 1,
+                RIGHT_CLICK: 2
+            }
+
+            if (isClickable(event.target) && event.button < MOUSE_BUTTONS.RIGHT_CLICK) {
+                event.preventDefault();
+                if (event.button === MOUSE_BUTTONS.LEFT_CLICK) {
+                    window.location = `${window.location.origin}/Appointment/Details/${id}`
+                    return;
+                }
+                window.open(`${window.location.origin}/Appointment/Details/${id}`, 'blank')
+            }
+        }
+
+        function isClickable(element) {
+            if (element.classList.contains('clickable')) {
+                return true;
+            }
+
+            if (element.classList.contains('not-clickable')) {
+                return false;
+            }
+
+            return element.parentNode === null ? false : isClickable(element.parentNode);
+        }
+
+    </script>
+}

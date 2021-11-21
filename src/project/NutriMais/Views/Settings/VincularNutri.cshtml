@@ -1,0 +1,122 @@
+﻿@{
+    ViewData["Title"] = "Gerenciar Pacientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var pacients = (List<UserModel>) ViewData["Pacients"];
+    var doctorPacients = (List<UserModel>) ViewData["DoctorPacients"];
+}
+
+
+
+<div class="row">
+    <div class="col-md-6 text-center">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="card-title">Pacientes Disponiveis</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover" id="confirmed-appointments">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pacient in pacients)
+                            {
+                <tr class="clickable">
+                    <td>@pacient.FullName</td>
+                    <td>@pacient.Email</td>
+                    <td class="not-clickable">
+                        <button onclick="assignPacient('@pacient.Id')" data-bs-toggle="tooltip" data-bs-placement="top" title="Confirmar" type="button" class="btn btn-sm btn-primary"><span><i class="mdi mdi-add"></i></span> Vincular</button>
+                    </td>
+                </tr>}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 text-center">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="card-title">Seus Pacientes</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover" id="confirmed-appointments">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pacient in doctorPacients)
+                            {
+                <tr class="clickable">
+                    <td>@pacient.FullName</td>
+                    <td>@pacient.Email</td>
+                    <td class="not-clickable">
+                        <button onclick="removePacient('@pacient.Id')" data-bs-toggle="tooltip" data-bs-placement="top" type="button" class="btn btn-sm btn-danger">Desvincular</button>
+                    </td>
+                </tr>}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                mount();
+            });
+
+            function mount() {
+
+            }
+
+            async function assignPacient(id) {
+                try {
+                    const response = await axios.put(`${window.location.origin}/Settings/Pacient/Assign/${id}`);
+                    if (response.status === 200) {
+                        showSuccessToast("Paciente vinculado!");
+                        setTimeout(() => window.location.reload(), 3000);
+                        return;
+                    }
+                    showErrorToast(response.data.message)
+                } catch (error) {
+                    showErrorToast(error)
+                }
+            }
+
+            async function removePacient(id) {
+                try {
+                    const response = await axios.put(`${window.location.origin}/Settings/Pacient/Remove/${id}`);
+                    if (response.status === 200) {
+                        showSuccessToast("Paciente desvinculado!");
+                        setTimeout(() => window.location.reload(), 3000);
+                        return;
+                    }
+                    showErrorToast(response.data.message)
+                } catch (error) {
+                    showErrorToast(error)
+                }
+            }
+
+        </script>
+
+    }

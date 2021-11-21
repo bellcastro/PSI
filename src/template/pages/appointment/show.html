@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link href="../../assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../../assets/css/main.css" rel="stylesheet">
+    <link href="../../assets/libs/full-calendar/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <title>NutriMais</title>
+    <style>
+      a {
+          color: inherit;
+          text-decoration: none;
+      }
+      .fc-toolbar-title {
+        text-transform: capitalize;
+      }
+      .fc-scroller {
+        overflow: hidden !important;
+      }
+
+      @media only screen and (max-width: 978px) {
+        #page-title {
+          margin-bottom: 1rem !important;
+        }
+
+        #page-actions {
+          justify-content: space-between !important;
+        }
+      }
+    </style>
+</head>
+<body>
+    <header>
+      <button class="navbar-toggler text-black justify-content-start" style="display: none;" type="button" data-bs-toggle="collapse" data-bs-target="#nav-bar-wrapper" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span style="font-size: 3rem;"><i class="mdi mdi-menu"></i></span>
+      </button>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 border-bottom header">
+          <a href="../home/index.html" class="d-flex align-items-center text-dark text-decoration-none">
+            <svg style="width:50px;height:50px" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+            </svg>
+            <span class="fs-4 ps-3 fw-bold"> NurtiMais</span>
+          </a>
+    
+          <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Login</a>
+            <a class="me-3 py-2 text-dark text-decoration-none" href="#">Logout</a>
+          </nav>
+        </div>
+        <div class="nav-scroller py-1 mb-2 bg-light" id="nav-bar-wrapper">
+          <nav class="nav d-flex justify-content-between navigation-bar">
+            <a class="p-2 link-secondary" href="./index.html">
+              <button class="btn btn-outline-success me-2" type="button">Consultas</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Planos Nutricionais e Receitas</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Minha Ficha</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Fale Conosco</button>
+            </a>
+            <a class="p-2 link-secondary" href="#">
+                <button class="btn btn-outline-success me-2" type="button">Configurações</button>
+            </a>
+          </nav>
+        </div>
+    </header>
+    <div class="container-fluid py-3">
+      <main>
+        <div class="card">
+            <h3 class="card-header">
+                <div class="row">
+                    <div class="col-md-6" id="page-title">
+                        Consulta com: Arthur Fernandes
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-end" id="page-actions">
+                      <a href="./edit.html" class="text-white me-2">
+                        <button class="btn btn-primary text-white" type="button">Editar Consulta</button>
+                      </a>
+                      <a href="#">
+                        <button onclick="show()" class="btn btn-danger" type="button">Cancelar Consulta</button>
+                      </a>
+                  </div>
+                </div>
+            </h3>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="alert alert-success text-center fs-5 fw-bold" role="alert">
+                    Consulta Confirmada
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-5">
+                  <form>
+                    <div class="mb-3">
+                      <label for="appointment-title" class="form-label">Titulo</label>
+                      <div id="appointment-title">Acompanhamento Rotineiro</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="appointment-type" class="form-label">Tipo</label>
+                      <div id="appointment-type">Virtual</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="appointment-participant" class="form-label">Com - (Paciente ao inves de "com" se for nutricionista)</label>
+                      <div id="appointment-participant">Arthur Fernandes</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="appointment-reason" class="form-label">Motivo</label>
+                      <div id="appointment-reason">Cras mattis lacus id orci mattis, non venenatis diam posuere. Donec auctor auctor tellus. Pellentesque et finibus arcu. Fusce molestie tortor at leo sollicitudin fringilla. Nullam malesuada turpis id diam efficitur ullamcorper. Donec at nibh tempus, pharetra metus at, pellentesque lacus. Donec imperdiet ut orci nec accumsan. Integer in libero a nibh cursus convallis. Praesent sit amet ipsum dictum, vestibulum libero in, rhoncus ipsum. Praesent vel massa ac sapien sodales luctus. Curabitur sapien est, tincidunt eget fermentum in, rutrum quis risus. Sed sed massa eleifend, sodales nibh eu, rhoncus neque. Aliquam quam ex, tristique vitae commodo sit amet, vestibulum vel mi.</div>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-md-7">
+                  <div id="calendar" style="max-height: 613px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+    </div>
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+      <div class="d-flex ps-3 text-center">
+          <div class="col-6 col-md">
+            <h5>Funcionalidades</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Lorem Ipsum</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Aliquam accumsan</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Tempus sit amet</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Fringilla eget</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Recursos</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Repositorio</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Documentação</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>About</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Equipe</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Privacy</a></li>
+              <li class="mb-1"><a class="link-secondary text-decoration-none" href="#">Terms</a></li>
+            </ul>
+          </div>
+      </div>
+      <div class="d-flex text-center pt-5">
+          <div class="col-12 col-md">
+          <svg style="width:50px;height:50px" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+          </svg>
+          <small class="d-block mb-3 text-muted">&copy; 2017–2021</small>
+        </div>
+      </div>
+  </footer>
+  <div class="modal fade" id="date-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Adicionar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-6">
+              <label for="from-time-input" class="form-label">De:</label>
+              <input type="time" id="from-time-input" class="form-control">
+            </div>
+            <div class="col-6">
+              <label for="until-time-input" class="form-label">Ate:</label>
+              <input type="time" id="until-time-input" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button onclick="addEvent()" data-bs-dismiss="modal" type="button" class="btn btn-primary">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="edit-modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cancelar Consulta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="edit-reason-input" class="form-label">Por favor: insira o motivo <span id="edit-reason">do cancelamento</span></label>
+          <input type="edit-reason-input" id="edit-reason-input" class="form-control" aria-describedby="edit-reason-input-describe">
+          <div id="edit-reason-input-describe" class="form-text">
+            Será enviado uma mensagem para o participante dessa consulta!
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button onclick="confirm()" data-bs-dismiss="modal" type="button" class="btn btn-primary">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="success-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header bg-success text-white py-1">
+        <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M22,18A4,4 0 0,1 18,22H14A4,4 0 0,1 10,18V16H22V18M4,3H14A2,2 0 0,1 16,5V14H8V19H4A2,2 0 0,1 2,17V5A2,2 0 0,1 4,3M4,6V8H6V6H4M14,8V6H8V8H14M4,10V12H6V10H4M8,10V12H14V10H8M4,14V16H6V14H4Z" />
+      </svg>          
+      <strong class="me-auto ps-2">NutriMais</strong>
+      <button type="button" title="Fechar" style="color: white;" class="btn btn-outlined btn-sm p-0" data-bs-dismiss="toast"><span class="fs-5"><i class="mdi mdi-close"></i></span></button>
+      </div>
+      <div class="toast-body fw-bold" style="background-color: #d1e7dd;">
+        Sucesso - <span id="success-message"></span>
+      </div>
+    </div>
+  </div>
+    <script src="../../assets/js/bootstrap/bootstrap.bundle.min.js"></script>    
+    <script src="../../assets/libs/full-calendar/main.min.js"></script>    
+    <script src="../../assets/js/main.js"></script>    
+    <script>
+       document.addEventListener("DOMContentLoaded", () => { 
+            mount();
+       });
+
+        function mount() {
+           mountCalendar();
+           mountDateModal();
+           mountCancelModal();
+        }
+
+        function mountDateModal() {
+            window.DATE_MODAL = null;
+            const element = document.querySelector('#date-modal');
+            if (element !== null) {
+                window.DATE_MODAL = new bootstrap.Modal(element)
+                element.addEventListener('show.bs.modal', () => {
+                  element.querySelectorAll('input').forEach(input => input.value = '');
+              })
+            }
+        }
+
+        function mountCancelModal() {
+              window.EDIT_MODAL = null;
+              const element = document.querySelector('#edit-modal');
+              if (element !== null) {
+                  window.EDIT_MODAL = new bootstrap.Modal(element)
+                  element.addEventListener('hidden.bs.modal', () => {
+                    const input = element.querySelector('input');
+                    if (input) {
+                        input.value = '';
+                    }
+                  })
+              }
+          }
+  
+          function show() {
+              const modal = window.EDIT_MODAL;
+              if (modal) {
+                  modal.show();
+              }
+          }
+  
+          function confirm() {
+              showSuccessToast('Edição realizada com sucesso!');
+          }
+
+        function mountCalendar() {
+          const element = document.querySelector('#calendar');
+          if (element) {
+            window.CALENDAR = new FullCalendar.Calendar(element, {
+              initialView: 'dayGridMonth',
+              showNonCurrentDates: false,
+              selectable: true,
+              dayMaxEvents: true,
+              locale: 'pt-br',
+              eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: false
+              },
+              select: handleSelectDate,
+              eventDidMount: handleEventMount,
+              eventChange: (info) => handleEventChange(info.event),
+            });
+            window.CALENDAR.render();
+            createFakeEvents();
+          }
+        }
+
+        function handleEventMount(info) {
+          info.event.setExtendedProp('element', info.el); 
+        }
+
+        function handleEventChange(event) {
+          if (event.extendedProps.element) {
+            return new bootstrap.Tooltip(event.extendedProps.element, {
+                   title: event.title,
+                   placement: 'top',
+                   trigger: 'hover',
+                   container: 'body'
+            });
+          }
+        }
+
+        function createFakeEvents() {
+          window.CALENDAR.addEvent({title: 'Acompanhamento Rotineiro - Arthur Fernandes', start: '2021-09-12T13:00:00', end: '2021-09-12T14:00:00'});
+          window.CALENDAR.addEvent({title: ' Primeira Consulta - Guilherme Ventura', start: '2021-09-30T15:00:00', end: '2021-09-21T16:00:00'});
+          window.CALENDAR.addEvent({title: 'Emergencial - Rafael Freitas', start: '2021-10-16T13:00:00', end: '2021-10-16T14:00:00'});
+          window.CALENDAR.addEvent({title: 'Acompanhamento Rotineiro - Isabella Pimenta', start: '2021-10-30T13:00:00', end: '2021-10-30T14:00:00'});
+          window.CALENDAR.addEvent({title: 'Solucionar Duvidas - Maria Fernandes', start: '2021-12-06T10:00:00', end: '2021-12-06T11:00:00'});
+        }
+
+        function handleSelectDate(selectedInfo) {
+          window.SELECTED_INFO = {
+            date: selectedInfo.startStr,
+          }
+
+          window.DATE_MODAL.show();
+        }
+
+        function addEvent() {
+          const eventTimes = getEventTimes();
+          const eventDate = window.SELECTED_INFO;
+          if (eventTimes && eventDate) {
+              const event = {
+                  id: 'new-event',
+                  title: getEventTitle(),
+                  start: eventDate.date + 'T' + eventTimes.start,
+                  end: eventDate.date + 'T' + eventTimes.end,
+              }
+              storeEvent(event);
+          }
+        }
+
+        function updateEventTitle() {
+          const storedEvent = window.CALENDAR.getEventById('new-event');
+          if (storedEvent) {
+            storedEvent.setProp('title', getEventTitle());
+          }
+        }
+
+        function storeEvent(event) {
+          const storedEvent = window.CALENDAR.getEventById('new-event');
+          if (storedEvent) {
+            storedEvent.setProp('title', event.title);
+            storedEvent.setStart(event.start);
+            storedEvent.setEnd(event.end);
+            return;
+          }
+
+          window.CALENDAR.addEvent(event);
+        }
+
+        function getEventTitle() {
+          const titleElement = document.querySelector('#appointment-title')
+          const participantElement = document.querySelector('#appointment-participant')
+          if (titleElement && participantElement && titleElement.value) {
+            if (participantElement.value !== '0') {
+              return titleElement.value + ' - ' + participantElement.selectedOptions[0].innerText;
+            }
+            return titleElement.value;
+          }
+
+          return 'Novo Evento';
+        }
+
+        function getEventTimes() {
+          const startTimeElement = document.querySelector('#from-time-input')
+          const endTimeElement = document.querySelector('#until-time-input')
+          if (startTimeElement && endTimeElement && startTimeElement.value && endTimeElement.value) {
+              return {
+                start: startTimeElement.value + ':00',
+                end: endTimeElement.value + ':00'
+              }
+          }
+
+          return undefined;
+        }
+    </script> 
+</body>
+</html>
