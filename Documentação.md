@@ -140,7 +140,9 @@ O projeto está restrito pelos itens apresentados na tabela a seguir.
 |RT- 005|Os desenvolvedores terão de sempre atualizar suas atividades no GitHub.|
 |RT- 006|O trabalho deve ser entregue de forma funcional.|
 
+## Diagrama de Classes
 
+![Diagrama de classes](Diagrama.jpeg)
 
 
 > **Links Úteis**:
